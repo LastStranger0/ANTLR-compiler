@@ -5,17 +5,17 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class MyXMLListener implements xmlListener {
     @Override
     public void enterOperation(xmlParser.OperationContext ctx) {
-
+        System.out.println("Start rule");
     }
 
     @Override
     public void exitOperation(xmlParser.OperationContext ctx) {
-
+        System.out.println("End rule");
     }
 
     @Override
     public void enterInitialise_var(xmlParser.Initialise_varContext ctx) {
-
+        System.out.println( "Creating var:" + ctx.NAME() + " with type " + ctx.TYPE(0));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class MyXMLListener implements xmlListener {
 
     @Override
     public void enterAssignment(xmlParser.AssignmentContext ctx) {
-
+        System.out.println(ctx.NAME().getText() + " " + ctx.expression().getText());
     }
 
     @Override

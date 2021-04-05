@@ -8,9 +8,9 @@ public class Main {
                 xmlLexer lexer = new xmlLexer(CharStreams.fromString("document doc = new document('darowdarow');"));
                 CommonTokenStream tokenStream = new CommonTokenStream(lexer);
                 xmlParser parser = new xmlParser(tokenStream);
-                ParseTree tree = parser.initialise_var();
+                ParseTree tree = parser.xml();
                 ParseTreeWalker walker = new ParseTreeWalker();
-                walker.walk(new xmlWalker(), tree);
+                walker.walk(new MyXMLListener(), tree);
 
     }
 }

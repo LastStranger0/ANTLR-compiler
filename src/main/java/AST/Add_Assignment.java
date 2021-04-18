@@ -1,7 +1,7 @@
 package AST;
 
 public class Add_Assignment extends Node {
-    Name name;
-    Number_Literal number_literal;
-    Expression expression;
+    public Name name;
+    public Number_Literal number_literal;
+    public Expression expression;
 }

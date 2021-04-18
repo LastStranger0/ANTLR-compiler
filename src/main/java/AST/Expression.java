@@ -3,12 +3,12 @@ package AST;
 import java.util.ArrayList;
 
 public class Expression extends Node{
-    Expression expression1;
-    Expression expression2;
-    Action_Operator action_operator;
-    Bool_Operator bool_operator;
-    Get_Operation get_operation;
-    Number_Literal number_literal;
-    String_Literal string_literal;
-    Name name;
+    public Expression expression1;
+    public Expression expression2;
+    public Action_Operator action_operator;
+    public Bool_Operator bool_operator;
+    public Get_Operation get_operation;
+    public Number_Literal number_literal;
+    public String_Literal string_literal;
+    public Name name;
 }

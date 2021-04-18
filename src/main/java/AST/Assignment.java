@@ -1,8 +1,8 @@
 package AST;
 
 public class Assignment extends Node{
-    Type type;
-    Name name;
-    Number_Literal number_literal;
-    Expression expression;
+    public Type type;
+    public Name name;
+    public Number_Literal number_literal;
+    public Expression expression;
 }

@@ -1,14 +1,13 @@
 package AST;
 
 public class String_Literal extends Node {
-    String strWithOne;
-    String strWithTwo;
+    public String str;
 
     public String getStrWithOne() {
-        return "'" +strWithOne+ "'";
+        return "'" +str+ "'";
     }
 
     public String getStrWithTwo() {
-        return "\""+strWithTwo+"\"";
+        return "\""+str+"\"";
     }
 }

@@ -1,6 +1,6 @@
 package AST;
 
-public class Operation {
+public class Operation extends Node {
     Get_Operation get_operation;
     Initialise_Var initialise_var;
     Assignment assignment;

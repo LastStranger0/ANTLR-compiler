@@ -1,6 +1,6 @@
 package AST;
 
-public class String_Literal {
+public class String_Literal extends Node {
     String strWithOne;
     String strWithTwo;
 

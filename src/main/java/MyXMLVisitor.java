@@ -3,13 +3,13 @@ import AST.*;
 import java.util.ArrayList;
 
 public class MyXMLVisitor extends xmlBaseVisitor<Node> {
-    private final xmlParserV1 xmlParserV1;
-    private final VarAndFunRegist regist = new VarAndFunRegist();
-    private final String name;
+    //private final xmlParserV1 xmlParserV1;
+    //private final VarAndFunRegister register = new VarAndFunRegister();
+    //private final String name;
 
-    public MyXMLVisitor(xmlParserV1 xmlParserV1, String name){
-        this.name = name;
-        this.xmlParserV1 = xmlParserV1;
+    public MyXMLVisitor(/*xmlParserV1 xmlParserV1, String name*/){
+        //this.name = name;
+        //this.xmlParserV1 = xmlParserV1;
     }
 
     @Override
@@ -364,11 +364,11 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
             case "int" -> range_statement.type = Type.INT;
             case "float" -> range_statement.type = Type.FLOAT;
         }
-        if (ctx.NAME().get(0)!=null){
+        if (ctx.NAME().size() > 0){
             range_statement.name1 = new Name();
             range_statement.name1.name = ctx.NAME().get(0).getText();
         }
-        if (ctx.NAME().get(1)!=null){
+        if (ctx.NAME().size() > 1){
             range_statement.name2 = new Name();
             range_statement.name2.name = ctx.NAME().get(0).getText();
         }
@@ -391,11 +391,11 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     @Override
     public Node visitType_cast(xmlParser.Type_castContext ctx) {
         Type_Cast type_cast = new Type_Cast();
-        if(ctx.NAME().get(0)!=null){
+        if(ctx.NAME().size()> 0){
             type_cast.name1 = new Name();
             type_cast.name1.name = ctx.NAME().get(0).getText();
         }
-        if(ctx.NAME().get(1)!=null){
+        if(ctx.NAME().size()>1){
             type_cast.name2 = new Name();
             type_cast.name2.name = ctx.NAME().get(1).getText();
         }

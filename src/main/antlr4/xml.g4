@@ -86,7 +86,7 @@ NAME: [a-zA-Z]+;
 NUMBER_LITERAL: [0-9]+('.'[0-9]+)?;
 STRING_LITERAL : QOUTES_ONE.*?QOUTES_ONE | QOUTES_TWO.*?QOUTES_TWO;
 
-WHITESPACE: (' '|'\t'|'\n') -> skip;
+WHITESPACE: (' '|'\t'|'\n'|'\r') -> skip;
 
 OPEN_BRACKET: '(';
 CLOSE_BRACKET: ')';

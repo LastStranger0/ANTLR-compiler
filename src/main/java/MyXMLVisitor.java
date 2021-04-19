@@ -74,11 +74,11 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     @Override
     public Node visitGet_elem(xmlParser.Get_elemContext ctx) {
         Get_Elem get_elem = new Get_Elem();
-        if (ctx.NAME().get(0) != null) {
+        if (ctx.NAME().size() > 0) {
             get_elem.name1 = new Name();
             get_elem.name1.name = ctx.NAME().get(0).getText();
         }
-        if (ctx.NAME().get(1)!=null) {
+        if (ctx.NAME().size() > 1) {
             get_elem.name2 = new Name();
             get_elem.name2.name = ctx.NAME().get(1).getText();
         }
@@ -103,13 +103,15 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
             assignment.number_literal.number = Double.parseDouble(ctx.NUMBER_LITERAL().getText());
         }
         assignment.expression = (Expression) this.visitExpression(ctx.expression());
-        switch (ctx.TYPE().getText()) {
-            case "document" -> assignment.type = Type.DOCUMENT;
-            case "node" -> assignment.type = Type.NODE;
-            case "attribute" -> assignment.type = Type.ATTRIBUTE;
-            case "string" -> assignment.type = Type.STRING;
-            case "int" -> assignment.type = Type.INT;
-            case "float" -> assignment.type = Type.FLOAT;
+        if (ctx.TYPE()!=null) {
+            switch (ctx.TYPE().getText()) {
+                case "document" -> assignment.type = Type.DOCUMENT;
+                case "node" -> assignment.type = Type.NODE;
+                case "attribute" -> assignment.type = Type.ATTRIBUTE;
+                case "string" -> assignment.type = Type.STRING;
+                case "int" -> assignment.type = Type.INT;
+                case "float" -> assignment.type = Type.FLOAT;
+            }
         }
         return assignment;
     }
@@ -130,7 +132,7 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     public Node visitCondition(xmlParser.ConditionContext ctx) {
         Condition condition = new Condition();
         condition.expression1 = (Expression) this.visitExpression(ctx.expression().get(0));
-        if (ctx.expression().get(1) != null) {
+        if (ctx.expression().size() > 0) {
             condition.expression2 = new ArrayList<>();
             for (int i = 0; i < ctx.expression().size(); i++) {
                 condition.expression2.add((Expression) this.visitExpression(ctx.expression().get(i)));
@@ -170,10 +172,10 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
         if (ctx.get_operation()!=null){
             expression.get_operation = (Get_Operation) this.visitGet_operation(ctx.get_operation());
         }
-        if (ctx.expression().get(0)!=null){
+        if (ctx.expression().size() > 0) {
             expression.expression1 = (Expression) this.visitExpression(ctx.expression().get(0));
         }
-        if (ctx.expression().get(1)!=null){
+        if (ctx.expression().size() > 1) {
             expression.expression2 = (Expression) this.visitExpression(ctx.expression().get(1));
         }
         if (ctx.ACTION_OPERATOR()!=null){

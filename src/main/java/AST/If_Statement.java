@@ -3,7 +3,7 @@ package AST;
 import java.util.List;
 
 public class If_Statement extends Node{
-    If_Block if_block;
-    List<Else_If_Block> else_if_blocks;
-    Else_Block else_block;
+    public If_Block if_block;
+    public List<Else_If_Block> else_if_blocks;
+    public Else_Block else_block;
 }

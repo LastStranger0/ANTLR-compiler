@@ -16,10 +16,14 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     public Node visitAdd_assignment(xmlParser.Add_assignmentContext ctx) {
         Add_Assignment add_assignment = new Add_Assignment();
         add_assignment.expression = (Expression) this.visitExpression(ctx.expression());
-        add_assignment.name = new Name();
-        add_assignment.name.name = this.name;
-        add_assignment.number_literal = new Number_Literal();
-        add_assignment.number_literal.number = Double.parseDouble(ctx.NUMBER_LITERAL().getText());
+        if(ctx.NAME()!=null) {
+            add_assignment.name = new Name();
+            add_assignment.name.name = ctx.NAME().getText();
+        }
+        if(ctx.NUMBER_LITERAL()!=null) {
+            add_assignment.number_literal = new Number_Literal();
+            add_assignment.number_literal.number = Double.parseDouble(ctx.NUMBER_LITERAL().getText());
+        }
         return add_assignment;
     }
 
@@ -56,20 +60,26 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     @Override
     public Node visitGet_array_elem(xmlParser.Get_array_elemContext ctx) {
         Get_Array_Elem get_array_elem = new Get_Array_Elem();
-        get_array_elem.name = new Name();
-        get_array_elem.number_literal = new Number_Literal();
-        get_array_elem.name.name = ctx.NAME().getText();
-        get_array_elem.number_literal.number = Double.parseDouble(ctx.NUMBER_LITERAL().getText());
+        if(ctx.NAME()!=null){
+            get_array_elem.name = new Name();
+            get_array_elem.name.name = ctx.NAME().getText();
+        }
+        if (ctx.NUMBER_LITERAL()!=null) {
+            get_array_elem.number_literal = new Number_Literal();
+            get_array_elem.number_literal.number = Double.parseDouble(ctx.NUMBER_LITERAL().getText());
+        }
         return get_array_elem;
     }
 
     @Override
     public Node visitGet_elem(xmlParser.Get_elemContext ctx) {
         Get_Elem get_elem = new Get_Elem();
-        if (ctx.NAME() != null) {
+        if (ctx.NAME().get(0) != null) {
             get_elem.name1 = new Name();
-            get_elem.name2 = new Name();
             get_elem.name1.name = ctx.NAME().get(0).getText();
+        }
+        if (ctx.NAME().get(1)!=null) {
+            get_elem.name2 = new Name();
             get_elem.name2.name = ctx.NAME().get(1).getText();
         }
         if (ctx.params() !=null) {
@@ -84,11 +94,15 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     @Override
     public Node visitAssignment(xmlParser.AssignmentContext ctx) {
         Assignment assignment = new Assignment();
-        assignment.name = new Name();
-        assignment.number_literal = new Number_Literal();
-        assignment.name.name = ctx.NAME().getText();
+        if (ctx.NAME()!=null) {
+            assignment.name = new Name();
+            assignment.name.name = ctx.NAME().getText();
+        }
+        if (ctx.NUMBER_LITERAL()!=null) {
+            assignment.number_literal = new Number_Literal();
+            assignment.number_literal.number = Double.parseDouble(ctx.NUMBER_LITERAL().getText());
+        }
         assignment.expression = (Expression) this.visitExpression(ctx.expression());
-        assignment.number_literal.number = Double.parseDouble(ctx.NUMBER_LITERAL().getText());
         switch (ctx.TYPE().getText()) {
             case "document" -> assignment.type = Type.DOCUMENT;
             case "node" -> assignment.type = Type.NODE;
@@ -103,9 +117,11 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     @Override
     public Node visitElse_block(xmlParser.Else_blockContext ctx) {
         Else_Block else_block = new Else_Block();
-        else_block.operations = new ArrayList<>();
-        for (int i = 0; i < ctx.operation().size(); i++){
-            else_block.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+        if (ctx.operation()!=null) {
+            else_block.operations = new ArrayList<>();
+            for (int i = 0; i < ctx.operation().size(); i++) {
+                else_block.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+            }
         }
         return else_block;
     }
@@ -127,9 +143,11 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     public Node visitElse_if_block(xmlParser.Else_if_blockContext ctx) {
         Else_If_Block else_if_block = new Else_If_Block();
         else_if_block.condition = (Condition) this.visitCondition(ctx.condition());
-        else_if_block.operations = new ArrayList<>();
-        for(int i = 0; i < ctx.operation().size(); i++){
-            else_if_block.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+        if(ctx.operation()!=null) {
+            else_if_block.operations = new ArrayList<>();
+            for (int i = 0; i < ctx.operation().size(); i++) {
+                else_if_block.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+            }
         }
         return else_if_block;
     }
@@ -183,66 +201,229 @@ public class MyXMLVisitor extends xmlBaseVisitor<Node> {
     public Node visitFor_statement(xmlParser.For_statementContext ctx) {
         For_Statement for_statement = new For_Statement();
         for_statement.range_statement = (Range_Statement) this.visitRange_statement(ctx.range_statement());
-        for_statement.operations = new ArrayList<>();
-        for (int i = 0; i < ctx.operation().size(); i++){
-            for_statement.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+        if(ctx.operation()!=null) {
+            for_statement.operations = new ArrayList<>();
+            for (int i = 0; i < ctx.operation().size(); i++) {
+                for_statement.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+            }
         }
         return for_statement;
     }
 
     @Override
     public Node visitFunc_call(xmlParser.Func_callContext ctx) {
-        return super.visitFunc_call(ctx);
+        Func_Call func_call = new Func_Call();
+        if (ctx.TYPE() != null) {
+            switch (ctx.TYPE().getText()) {
+                case "document" -> func_call.type = Type.DOCUMENT;
+                case "node" -> func_call.type = Type.NODE;
+                case "attribute" -> func_call.type = Type.ATTRIBUTE;
+                case "string" -> func_call.type = Type.STRING;
+                case "int" -> func_call.type = Type.INT;
+                case "float" -> func_call.type = Type.FLOAT;
+            }
+        }
+        if (ctx.NAME()!=null) {
+            func_call.name = new Name();
+            func_call.name.name = ctx.NAME().getText();
+        }
+        if (ctx.params()!=null){
+            func_call.params = (Params) this.visitParams(ctx.params());
+        }
+        return func_call;
     }
 
     @Override
     public Node visitGet_operation(xmlParser.Get_operationContext ctx) {
-        return super.visitGet_operation(ctx);
+        Get_Operation get_operation = new Get_Operation();
+        if (ctx.get_array_elem()!=null) {
+            get_operation.get_array_elem = (Get_Array_Elem) this.visitGet_array_elem(ctx.get_array_elem());
+        }
+        if (ctx.get_elem()!=null) {
+            get_operation.get_elem = (Get_Elem) this.visitGet_elem(ctx.get_elem());
+        }
+        if (ctx.func_call()!=null) {
+            get_operation.func_call = (Func_Call) this.visitFunc_call(ctx.func_call());
+        }
+        return get_operation;
     }
 
     @Override
     public Node visitIf_block(xmlParser.If_blockContext ctx) {
-        return super.visitIf_block(ctx);
+        If_Block if_block = new If_Block();
+        if_block.condition = (Condition) this.visitCondition(ctx.condition());
+        if(ctx.operation()!=null) {
+            if_block.operations = new ArrayList<>();
+            for (int i = 0; i < ctx.operation().size(); i++) {
+                if_block.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+            }
+        }
+        return if_block;
     }
 
     @Override
     public Node visitIf_statement(xmlParser.If_statementContext ctx) {
-        return super.visitIf_statement(ctx);
+        If_Statement if_statement = new If_Statement();
+        if_statement.if_block = (If_Block) this.visitIf_block(ctx.if_block());
+        if (ctx.else_block()!=null){
+            if_statement.else_block = (Else_Block) this.visitElse_block(ctx.else_block());
+        }
+        if(ctx.else_if_block()!=null) {
+            if_statement.else_if_blocks = new ArrayList<>();
+            for (int i = 0; i < ctx.else_if_block().size(); i++) {
+                if_statement.else_if_blocks.add((Else_If_Block) this.visitElse_if_block(ctx.else_if_block().get(i)));
+            }
+        }
+        return if_statement;
     }
 
     @Override
     public Node visitInitialise_func(xmlParser.Initialise_funcContext ctx) {
-        return super.visitInitialise_func(ctx);
+        Initialise_Func initialise_func = new Initialise_Func();
+        if(ctx.NAME()!=null){
+            initialise_func.name = new Name();
+            initialise_func.name.name = ctx.NAME().get(0).getText();
+        }
+        switch (ctx.TYPE().get(0).getText()) {
+            case "document" -> initialise_func.type = Type.DOCUMENT;
+            case "node" -> initialise_func.type = Type.NODE;
+            case "attribute" -> initialise_func.type = Type.ATTRIBUTE;
+            case "string" -> initialise_func.type = Type.STRING;
+            case "int" -> initialise_func.type = Type.INT;
+            case "float" -> initialise_func.type = Type.FLOAT;
+        }
+        if(ctx.TYPE().get(1)!=null){
+            initialise_func.typesOfVar = new ArrayList<>();
+            for(int i =1; i< ctx.TYPE().size();i++){
+                switch (ctx.TYPE().get(i).getText()) {
+                    case "document" -> initialise_func.typesOfVar.add(Type.DOCUMENT);
+                    case "node" -> initialise_func.typesOfVar.add(Type.NODE);
+                    case "attribute" -> initialise_func.typesOfVar.add(Type.ATTRIBUTE);
+                    case "string" -> initialise_func.typesOfVar.add(Type.STRING);
+                    case "int" -> initialise_func.typesOfVar.add(Type.INT);
+                    case "float" -> initialise_func.typesOfVar.add(Type.FLOAT);
+                }
+            }
+        }
+        if (ctx.NAME().get(1)!=null){
+            initialise_func.namesOfVar = new ArrayList<>();
+            for (int i = 1; i < ctx.NAME().size(); i++){
+                Name name = new Name();
+                name.name = ctx.NAME().get(i).getText();
+                initialise_func.namesOfVar.add(name);
+            }
+        }
+        if (ctx.operation()!=null){
+            initialise_func.operations = new ArrayList<>();
+            for (int i = 0; i < ctx.operation().size(); i++){
+                initialise_func.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+            }
+        }
+        return initialise_func;
     }
 
     @Override
     public Node visitInitialise_var(xmlParser.Initialise_varContext ctx) {
-        return super.visitInitialise_var(ctx);
+        Initialise_Var initialise_var = new Initialise_Var();
+        if (ctx.NAME()!=null){
+            initialise_var.name = new Name();
+            initialise_var.name.name = ctx.NAME().getText();
+        }
+        switch (ctx.TYPE().get(0).getText()) {
+            case "document" -> initialise_var.type = Type.DOCUMENT;
+            case "node" -> initialise_var.type = Type.NODE;
+            case "attribute" -> initialise_var.type = Type.ATTRIBUTE;
+            case "string" -> initialise_var.type = Type.STRING;
+            case "int" -> initialise_var.type = Type.INT;
+            case "float" -> initialise_var.type = Type.FLOAT;
+        }
+        initialise_var.expression = (Expression) this.visitExpression(ctx.expression());
+        return initialise_var;
     }
 
     @Override
     public Node visitParams(xmlParser.ParamsContext ctx) {
-        return super.visitParams(ctx);
+        Params params = new Params();
+        params.expressions = new ArrayList<>();
+        for(int i = 0; i < ctx.expression().size(); i++){
+            params.expressions.add((Expression) this.visitExpression(ctx.expression().get(i)));
+        }
+        return params;
     }
 
     @Override
     public Node visitRange_statement(xmlParser.Range_statementContext ctx) {
-        return super.visitRange_statement(ctx);
+        Range_Statement range_statement = new Range_Statement();
+        switch (ctx.TYPE().getText()) {
+            case "document" -> range_statement.type = Type.DOCUMENT;
+            case "node" -> range_statement.type = Type.NODE;
+            case "attribute" -> range_statement.type = Type.ATTRIBUTE;
+            case "string" -> range_statement.type = Type.STRING;
+            case "int" -> range_statement.type = Type.INT;
+            case "float" -> range_statement.type = Type.FLOAT;
+        }
+        if (ctx.NAME().get(0)!=null){
+            range_statement.name1 = new Name();
+            range_statement.name1.name = ctx.NAME().get(0).getText();
+        }
+        if (ctx.NAME().get(1)!=null){
+            range_statement.name2 = new Name();
+            range_statement.name2.name = ctx.NAME().get(0).getText();
+        }
+        return range_statement;
     }
 
     @Override
     public Node visitWhile_statement(xmlParser.While_statementContext ctx) {
-        return super.visitWhile_statement(ctx);
+        While_Statement while_statement = new While_Statement();
+        while_statement.condition = (Condition) this.visitCondition(ctx.condition());
+        if(ctx.operation()!=null){
+            while_statement.operations = new ArrayList<>();
+            for (int i = 0; i < ctx.operation().size(); i++){
+                while_statement.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+            }
+        }
+        return while_statement;
     }
 
     @Override
     public Node visitType_cast(xmlParser.Type_castContext ctx) {
-        return super.visitType_cast(ctx);
+        Type_Cast type_cast = new Type_Cast();
+        if(ctx.NAME().get(0)!=null){
+            type_cast.name1 = new Name();
+            type_cast.name1.name = ctx.NAME().get(0).getText();
+        }
+        if(ctx.NAME().get(1)!=null){
+            type_cast.name2 = new Name();
+            type_cast.name2.name = ctx.NAME().get(1).getText();
+        }
+        switch (ctx.TYPE().getText()) {
+            case "document" -> type_cast.type = Type.DOCUMENT;
+            case "node" -> type_cast.type = Type.NODE;
+            case "attribute" -> type_cast.type = Type.ATTRIBUTE;
+            case "string" -> type_cast.type = Type.STRING;
+            case "int" -> type_cast.type = Type.INT;
+            case "float" -> type_cast.type = Type.FLOAT;
+        }
+        return type_cast;
     }
 
     @Override
     public Node visitXml(xmlParser.XmlContext ctx) {
-        return super.visitXml(ctx);
+        XML xml = new XML();
+        if (ctx.operation()!=null){
+            xml.operations = new ArrayList<>();
+            for(int i = 0; i < ctx.operation().size(); i++){
+                xml.operations.add((Operation) this.visitOperation(ctx.operation().get(i)));
+            }
+        }
+        if (ctx.initialise_func()!=null){
+            xml.initialise_funcs = new ArrayList<>();
+            for(int i = 0; i < ctx.initialise_func().size(); i++){
+                xml.initialise_funcs.add((Initialise_Func) this.visitInitialise_func(ctx.initialise_func().get(i)));
+            }
+        }
+        return xml;
     }
 
 }

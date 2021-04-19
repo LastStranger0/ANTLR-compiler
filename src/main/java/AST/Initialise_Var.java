@@ -1,7 +1,7 @@
 package AST;
 
 public class Initialise_Var extends Node{
-    Type type;
-    Name name;
-    Expression expression;
+    public Type type;
+    public Name name;
+    public Expression expression;
 }

@@ -1,8 +1,8 @@
 package AST;
 
 public class Type_Cast extends Node{
-    Name name1;
-    Name name2;
-    Type type;
+    public Name name1;
+    public Name name2;
+    public Type type;
 
 }
